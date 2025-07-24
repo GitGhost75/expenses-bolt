@@ -64,6 +64,19 @@ function App() {
     updateGroup(updatedGroup);
   };
 
+  const renamePerson = (id: string, newName: string) => {
+    if (!activeGroup) return;
+    
+    const updatedGroup = {
+      ...activeGroup,
+      people: activeGroup.people.map(person => 
+        person.id === id ? { ...person, name: newName } : person
+      )
+    };
+    
+    updateGroup(updatedGroup);
+  };
+
   const addExpense = (description: string, amount: number, paidBy: string) => {
     if (!activeGroup) return;
     
@@ -150,6 +163,7 @@ function App() {
             people={activeGroup.people}
             onAddPerson={addPerson}
             onRemovePerson={removePerson}
+            onRenamePerson={renamePerson}
           />
           <ExpenseManager
             people={activeGroup.people}

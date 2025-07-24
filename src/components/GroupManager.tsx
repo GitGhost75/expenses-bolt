@@ -84,7 +84,7 @@ export function GroupManager({ groups, onAddGroup, onRemoveGroup, onSelectGroup 
                         e.stopPropagation();
                         onRemoveGroup(group.id);
                       }}
-                      className="text-red-400 hover:text-red-600 transition-colors duration-200 opacity-0 group-hover:opacity-100"
+                      className="text-red-400 hover:text-red-600 transition-colors duration-200"
                     >
                       <Trash2 size={16} />
                     </button>

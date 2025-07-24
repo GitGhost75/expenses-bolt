@@ -11,6 +11,14 @@ export interface Expense {
   date: Date;
 }
 
+export interface Group {
+  id: string;
+  name: string;
+  people: Person[];
+  expenses: Expense[];
+  createdAt: Date;
+}
+
 export interface Balance {
   personId: string;
   balance: number;

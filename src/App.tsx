@@ -107,6 +107,21 @@ function App() {
     updateGroup(updatedGroup);
   };
 
+  const editExpense = (id: string, description: string, amount: number, paidBy: string) => {
+    if (!activeGroup) return;
+    
+    const updatedGroup = {
+      ...activeGroup,
+      expenses: activeGroup.expenses.map(expense => 
+        expense.id === id 
+          ? { ...expense, description, amount, paidBy }
+          : expense
+      )
+    };
+    
+    updateGroup(updatedGroup);
+  };
+
   if (!activeGroup) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -170,6 +185,7 @@ function App() {
             expenses={activeGroup.expenses}
             onAddExpense={addExpense}
             onRemoveExpense={removeExpense}
+            onEditExpense={editExpense}
           />
         </div>
 

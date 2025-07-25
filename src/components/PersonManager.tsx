@@ -50,7 +50,6 @@ export function PersonManager({ people, onAddPerson, onRemovePerson, onRenamePer
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
-    <div className="bg-white rounded-lg shadow-md p-6">
       <h2 className="text-xl font-semibold text-gray-800 mb-4">Gruppenmitglieder</h2>
       
       <form onSubmit={handleSubmit} className="mb-4">

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, Edit2, Check, X, ChevronDown, ChevronRight } from 'lucide-react';
+import { Plus, Trash2, Edit2, Check, X, ChevronDown, ChevronRight, Receipt } from 'lucide-react';
 import { Person, Expense } from '../types';
 
 interface ExpenseManagerProps {
@@ -19,6 +19,7 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
   const [editingAmount, setEditingAmount] = useState('');
   const [editingPaidBy, setEditingPaidBy] = useState('');
   const [expandedExpenses, setExpandedExpenses] = useState<Set<string>>(new Set());
+  const [isExpenseBlockExpanded, setIsExpenseBlockExpanded] = useState(true);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -79,9 +80,34 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-xl font-semibold text-gray-800 mb-4">Ausgaben</h2>
+      <div 
+        className="flex items-center justify-between cursor-pointer hover:bg-gray-50 -m-6 p-6 rounded-t-lg transition-colors duration-200"
+        onClick={() => setIsExpenseBlockExpanded(!isExpenseBlockExpanded)}
+      >
+        <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+          <Receipt size={24} />
+          Ausgaben
+          {expenses.length > 0 && (
+            <span className="bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded-full ml-2">
+              {expenses.length}
+            </span>
+          )}
+        </h2>
+        <div className="flex items-center gap-3">
+          {expenses.length > 0 && (
+            <span className="text-sm text-gray-600 font-medium">
+              Gesamt: {expenses.reduce((sum, expense) => sum + expense.amount, 0).toFixed(2)}€
+            </span>
+          )}
+          <button className="text-gray-400 hover:text-gray-600 transition-colors duration-200">
+            {isExpenseBlockExpanded ? <ChevronDown size={24} /> : <ChevronRight size={24} />}
+          </button>
+        </div>
+      </div>
       
-      <form onSubmit={handleSubmit} className="mb-6 space-y-4">
+      {isExpenseBlockExpanded && (
+        <>
+          <form onSubmit={handleSubmit} className="mb-6 space-y-4 mt-4">
         <div>
           <input
             type="text"
@@ -131,7 +157,7 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
         </button>
       </form>
 
-      <div className="space-y-3">
+          <div className="space-y-3">
         {expenses.map((expense) => {
           const paidByPerson = people.find(p => p.id === expense.paidBy);
           const isExpanded = expandedExpenses.has(expense.id);
@@ -289,6 +315,8 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
           </div>
         )}
       </div>
+        </>
+      )}
     </div>
   );
 }

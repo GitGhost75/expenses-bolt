@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, Edit2, Check, X } from 'lucide-react';
+import { Plus, Trash2, Edit2, Check, X, ChevronDown, ChevronRight } from 'lucide-react';
 import { Person, Expense } from '../types';
 
 interface ExpenseManagerProps {
@@ -18,6 +18,7 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
   const [editingDescription, setEditingDescription] = useState('');
   const [editingAmount, setEditingAmount] = useState('');
   const [editingPaidBy, setEditingPaidBy] = useState('');
+  const [expandedExpenses, setExpandedExpenses] = useState<Set<string>>(new Set());
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,6 +57,16 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
     } else if (e.key === 'Escape') {
       cancelEditing();
     }
+  };
+
+  const toggleExpense = (expenseId: string) => {
+    const newExpanded = new Set(expandedExpenses);
+    if (newExpanded.has(expenseId)) {
+      newExpanded.delete(expenseId);
+    } else {
+      newExpanded.add(expenseId);
+    }
+    setExpandedExpenses(newExpanded);
   };
 
   const formatDate = (date: Date) => {
@@ -123,14 +134,15 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
       <div className="space-y-3">
         {expenses.map((expense) => {
           const paidByPerson = people.find(p => p.id === expense.paidBy);
+          const isExpanded = expandedExpenses.has(expense.id);
           
           if (editingId === expense.id) {
             return (
               <div
                 key={expense.id}
-                className="p-4 bg-blue-50 rounded-md border border-blue-200"
+                className="bg-blue-50 rounded-lg border border-blue-200 overflow-hidden"
               >
-                <div className="space-y-3">
+                <div className="p-4 space-y-3">
                   <input
                     type="text"
                     value={editingDescription}
@@ -189,40 +201,92 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
           }
           
           return (
-            <div
+            <div 
               key={expense.id}
-              className="flex items-center justify-between p-4 bg-gray-50 rounded-md hover:bg-gray-100 transition-colors duration-200"
+              className="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200"
             >
-              <div className="flex-1">
-                <div className="font-medium text-gray-800">{expense.description}</div>
-                <div className="text-sm text-gray-600">
-                  {formatDate(expense.date)} • Bezahlt von {paidByPerson?.name}
+              {/* Akkordeon Header */}
+              <div 
+                className="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 transition-colors duration-200"
+                onClick={() => toggleExpense(expense.id)}
+              >
+                <div className="flex items-center gap-3 flex-1">
+                  <button className="text-gray-400 hover:text-gray-600 transition-colors duration-200">
+                    {isExpanded ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
+                  </button>
+                  <div className="flex-1">
+                    <div className="font-medium text-gray-800">{expense.description}</div>
+                    <div className="text-sm text-gray-500">
+                      {paidByPerson?.name}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="font-semibold text-lg text-green-600">
+                    {expense.amount.toFixed(2)}€
+                  </span>
                 </div>
               </div>
-              <div className="flex items-center gap-3">
-                <span className="font-semibold text-lg text-green-600">
-                  {expense.amount.toFixed(2)}€
-                </span>
-                <button
-                  onClick={() => startEditing(expense)}
-                  className="text-blue-500 hover:text-blue-700 transition-colors duration-200"
-                  title="Bearbeiten"
-                >
-                  <Edit2 size={18} />
-                </button>
-                <button
-                  onClick={() => onRemoveExpense(expense.id)}
-                  className="text-red-500 hover:text-red-700 transition-colors duration-200"
-                  title="Löschen"
-                >
-                  <Trash2 size={18} />
-                </button>
-              </div>
+              
+              {/* Akkordeon Content */}
+              {isExpanded && (
+                <div className="border-t border-gray-200 bg-gray-50 p-4">
+                  <div className="space-y-3">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <span className="font-medium text-gray-600">Datum:</span>
+                        <div className="text-gray-800">{formatDate(expense.date)}</div>
+                      </div>
+                      <div>
+                        <span className="font-medium text-gray-600">Bezahlt von:</span>
+                        <div className="text-gray-800">{paidByPerson?.name}</div>
+                      </div>
+                      <div>
+                        <span className="font-medium text-gray-600">Betrag:</span>
+                        <div className="text-gray-800 font-semibold">{expense.amount.toFixed(2)}€</div>
+                      </div>
+                      <div>
+                        <span className="font-medium text-gray-600">Anteil pro Person:</span>
+                        <div className="text-gray-800">{(expense.amount / people.length).toFixed(2)}€</div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex justify-end gap-2 pt-2 border-t border-gray-200">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          startEditing(expense);
+                        }}
+                        className="px-3 py-1.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 flex items-center gap-1 text-sm"
+                        title="Bearbeiten"
+                      >
+                        <Edit2 size={16} />
+                        Bearbeiten
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onRemoveExpense(expense.id);
+                        }}
+                        className="px-3 py-1.5 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors duration-200 flex items-center gap-1 text-sm"
+                        title="Löschen"
+                      >
+                        <Trash2 size={16} />
+                        Löschen
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           );
         })}
         {expenses.length === 0 && (
-          <p className="text-gray-500 text-center py-8">Noch keine Ausgaben erfasst</p>
+          <div className="text-center py-12">
+            <div className="text-gray-400 mb-2">💳</div>
+            <p className="text-gray-500 text-lg mb-1">Noch keine Ausgaben erfasst</p>
+            <p className="text-gray-400 text-sm">Fügen Sie Ihre erste Ausgabe hinzu</p>
+          </div>
         )}
       </div>
     </div>

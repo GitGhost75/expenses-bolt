@@ -4,6 +4,7 @@ import { PersonManager } from './components/PersonManager';
 import { ExpenseManager } from './components/ExpenseManager';
 import { Summary } from './components/Summary';
 import { Group, Person, Expense } from './types';
+import { generateShareId } from './utils/groupUtils';
 import { Receipt, ArrowLeft } from 'lucide-react';
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
   const addGroup = (name: string) => {
     const newGroup: Group = {
       id: Date.now().toString(),
+      shareId: generateShareId(),
       name,
       people: [],
       expenses: [],

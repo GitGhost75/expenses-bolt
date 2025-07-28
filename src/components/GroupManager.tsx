@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Users, Calendar, Trash2, ChevronRight } from 'lucide-react';
+import { Plus, Users, Calendar, Trash2, ChevronRight, Share2, Copy, Check } from 'lucide-react';
 import { Group } from '../types';
 
 interface GroupManagerProps {
@@ -11,6 +11,7 @@ interface GroupManagerProps {
 
 export function GroupManager({ groups, onAddGroup, onRemoveGroup, onSelectGroup }: GroupManagerProps) {
   const [newGroupName, setNewGroupName] = useState('');
+  const [copiedGroupId, setCopiedGroupId] = useState<string | null>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,6 +31,16 @@ export function GroupManager({ groups, onAddGroup, onRemoveGroup, onSelectGroup 
 
   const getTotalExpenses = (group: Group) => {
     return group.expenses.reduce((sum, expense) => sum + expense.amount, 0);
+  };
+
+  const copyShareId = async (shareId: string, groupId: string) => {
+    try {
+      await navigator.clipboard.writeText(shareId);
+      setCopiedGroupId(groupId);
+      setTimeout(() => setCopiedGroupId(null), 2000);
+    } catch (err) {
+      console.error('Failed to copy share ID:', err);
+    }
   };
 
   return (
@@ -82,13 +93,57 @@ export function GroupManager({ groups, onAddGroup, onRemoveGroup, onSelectGroup 
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
+                        copyShareId(group.shareId, group.id);
+                      }}
+                      className="text-blue-400 hover:text-blue-600 transition-colors duration-200"
+                      title="Gruppen-ID kopieren"
+                    >
+                      {copiedGroupId === group.id ? <Check size={16} /> : <Copy size={16} />}
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
                         onRemoveGroup(group.id);
                       }}
                       className="text-red-400 hover:text-red-600 transition-colors duration-200"
+                      title="Gruppe löschen"
                     >
                       <Trash2 size={16} />
                     </button>
                     <ChevronRight size={20} className="text-gray-400 group-hover:text-blue-600 transition-colors duration-200" />
+                  </div>
+                </div>
+                
+                <div className="mb-3 p-2 bg-blue-50 rounded-md border border-blue-200">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Share2 size={16} className="text-blue-600" />
+                      <span className="text-sm font-medium text-blue-800">Gruppen-ID:</span>
+                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        copyShareId(group.shareId, group.id);
+                      }}
+                      className="flex items-center gap-1 px-2 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors duration-200"
+                    >
+                      {copiedGroupId === group.id ? (
+                        <>
+                          <Check size={14} />
+                          Kopiert!
+                        </>
+                      ) : (
+                        <>
+                          <Copy size={14} />
+                          Kopieren
+                        </>
+                      )}
+                    </button>
+                  </div>
+                  <div className="mt-1">
+                    <code className="text-lg font-mono font-bold text-blue-900 tracking-wider">
+                      {group.shareId}
+                    </code>
                   </div>
                 </div>
                 

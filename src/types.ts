@@ -13,6 +13,7 @@ export interface Expense {
 
 export interface Group {
   id: string;
+  shareId: string;
   name: string;
   people: Person[];
   expenses: Expense[];

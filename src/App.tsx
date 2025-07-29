@@ -127,13 +127,13 @@ function App() {
   if (!activeGroup) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
           <header className="text-center mb-8">
             <div className="flex items-center justify-center gap-3 mb-4">
-              <Receipt size={32} className="text-blue-600" />
-              <h1 className="text-3xl font-bold text-gray-800">Ausgaben-Aufteilung</h1>
+              <Receipt size={28} className="text-blue-600 sm:w-8 sm:h-8" />
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Ausgaben-Aufteilung</h1>
             </div>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto px-2">
               Verwalten Sie mehrere Ausgaben-Gruppen und lassen Sie sich automatisch berechnen, 
               wer wem wie viel schuldet, damit am Ende alle den gleichen Betrag bezahlt haben.
             </p>
@@ -152,30 +152,30 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="container mx-auto px-4 py-8">
-        <header className="mb-8">
-          <div className="flex items-center gap-4 mb-4">
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
+        <header className="mb-6 sm:mb-8">
+          <div className="flex items-center gap-2 sm:gap-4 mb-4">
             <button
               onClick={() => setActiveGroupId(null)}
-              className="flex items-center gap-2 px-3 py-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-md transition-colors duration-200"
+              className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 text-sm sm:text-base text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-md transition-colors duration-200"
             >
-              <ArrowLeft size={20} />
+              <ArrowLeft size={18} className="sm:w-5 sm:h-5" />
               Zurück zu Gruppen
             </button>
           </div>
           
           <div className="text-center">
             <div className="flex items-center justify-center gap-3 mb-4">
-              <Receipt size={32} className="text-blue-600" />
-              <h1 className="text-3xl font-bold text-gray-800">{activeGroup.name}</h1>
+              <Receipt size={28} className="text-blue-600 sm:w-8 sm:h-8" />
+              <h1 className="text-xl sm:text-3xl font-bold text-gray-800 break-words">{activeGroup.name}</h1>
             </div>
-            <p className="text-gray-600">
+            <p className="text-sm sm:text-base text-gray-600 px-2">
               Erfassen Sie die Ausgaben für diese Gruppe und sehen Sie die automatische Aufteilung
             </p>
           </div>
         </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8 mb-6 sm:mb-8">
           <PersonManager
             people={activeGroup.people}
             onAddPerson={addPerson}

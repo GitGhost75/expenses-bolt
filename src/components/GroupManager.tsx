@@ -45,103 +45,103 @@ export function GroupManager({ groups, onAddGroup, onRemoveGroup, onSelectGroup 
 
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">Neue Gruppe erstellen</h2>
+      <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6 sm:mb-8">
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">Neue Gruppe erstellen</h2>
         
         <form onSubmit={handleSubmit} className="mb-4">
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <input
               type="text"
               value={newGroupName}
               onChange={(e) => setNewGroupName(e.target.value)}
               placeholder="Gruppenname eingeben (z.B. Urlaub 2024, WG Kosten, etc.)"
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="flex-1 px-3 py-2.5 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 flex items-center gap-2"
+              className="px-4 py-2.5 sm:py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center gap-2 text-sm sm:text-base"
             >
               <Plus size={18} />
-              <span className="hidden sm:inline">Erstellen</span>
+              <span>Erstellen</span>
             </button>
           </div>
         </form>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-xl font-semibold text-gray-800 mb-6">Meine Gruppen</h2>
+      <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4 sm:mb-6">Meine Gruppen</h2>
         
         {groups.length === 0 ? (
-          <div className="text-center py-12">
-            <Users size={48} className="mx-auto text-gray-400 mb-4" />
-            <p className="text-gray-500 text-lg mb-2">Noch keine Gruppen erstellt</p>
-            <p className="text-gray-400">Erstellen Sie Ihre erste Gruppe, um mit der Ausgaben-Aufteilung zu beginnen</p>
+          <div className="text-center py-8 sm:py-12">
+            <Users size={40} className="mx-auto text-gray-400 mb-4 sm:w-12 sm:h-12" />
+            <p className="text-gray-500 text-base sm:text-lg mb-2">Noch keine Gruppen erstellt</p>
+            <p className="text-gray-400 text-sm sm:text-base px-4">Erstellen Sie Ihre erste Gruppe, um mit der Ausgaben-Aufteilung zu beginnen</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {groups.map((group) => (
               <div
                 key={group.id}
-                className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200 cursor-pointer group"
+                className="border border-gray-200 rounded-lg p-3 sm:p-4 hover:shadow-md transition-shadow duration-200 cursor-pointer group"
                 onClick={() => onSelectGroup(group.id)}
               >
                 <div className="flex items-start justify-between mb-3">
-                  <h3 className="font-semibold text-gray-800 text-lg group-hover:text-blue-600 transition-colors duration-200">
+                  <h3 className="font-semibold text-gray-800 text-base sm:text-lg group-hover:text-blue-600 transition-colors duration-200 break-words flex-1 mr-2">
                     {group.name}
                   </h3>
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-1 flex-shrink-0">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         copyShareId(group.shareId, group.id);
                       }}
-                      className="text-blue-400 hover:text-blue-600 transition-colors duration-200"
+                      className="text-blue-400 hover:text-blue-600 transition-colors duration-200 p-1"
                       title="Gruppen-ID kopieren"
                     >
-                      {copiedGroupId === group.id ? <Check size={16} /> : <Copy size={16} />}
+                      {copiedGroupId === group.id ? <Check size={14} className="sm:w-4 sm:h-4" /> : <Copy size={14} className="sm:w-4 sm:h-4" />}
                     </button>
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         onRemoveGroup(group.id);
                       }}
-                      className="text-red-400 hover:text-red-600 transition-colors duration-200"
+                      className="text-red-400 hover:text-red-600 transition-colors duration-200 p-1"
                       title="Gruppe löschen"
                     >
-                      <Trash2 size={16} />
+                      <Trash2 size={14} className="sm:w-4 sm:h-4" />
                     </button>
-                    <ChevronRight size={20} className="text-gray-400 group-hover:text-blue-600 transition-colors duration-200" />
+                    <ChevronRight size={16} className="text-gray-400 group-hover:text-blue-600 transition-colors duration-200 sm:w-5 sm:h-5" />
                   </div>
                 </div>
                 
-                <div className="mb-3 p-2 bg-blue-50 rounded-md border border-blue-200">
+                <div className="mb-3 p-2 sm:p-3 bg-blue-50 rounded-md border border-blue-200">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <Share2 size={16} className="text-blue-600" />
-                      <span className="text-sm font-medium text-blue-800">Gruppen-ID:</span>
+                      <Share2 size={14} className="text-blue-600 sm:w-4 sm:h-4" />
+                      <span className="text-xs sm:text-sm font-medium text-blue-800">Gruppen-ID:</span>
                     </div>
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         copyShareId(group.shareId, group.id);
                       }}
-                      className="flex items-center gap-1 px-2 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors duration-200"
+                      className="flex items-center gap-1 px-2 py-1 text-xs sm:text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors duration-200"
                     >
                       {copiedGroupId === group.id ? (
                         <>
-                          <Check size={14} />
+                          <Check size={12} className="sm:w-3.5 sm:h-3.5" />
                           Kopiert!
                         </>
                       ) : (
                         <>
-                          <Copy size={14} />
+                          <Copy size={12} className="sm:w-3.5 sm:h-3.5" />
                           Kopieren
                         </>
                       )}
                     </button>
                   </div>
                   <div className="mt-1">
-                    <code className="text-lg font-mono font-bold text-blue-900 tracking-wider">
+                    <code className="text-sm sm:text-lg font-mono font-bold text-blue-900 tracking-wider break-all">
                       {group.shareId}
                     </code>
                   </div>
@@ -149,25 +149,25 @@ export function GroupManager({ groups, onAddGroup, onRemoveGroup, onSelectGroup 
                 
                 <div className="space-y-2 text-sm text-gray-600 mb-4">
                   <div className="flex items-center gap-2">
-                    <Users size={16} />
+                    <Users size={14} className="sm:w-4 sm:h-4" />
                     <span>{group.people.length} Personen</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Calendar size={16} />
-                    <span>Erstellt am {formatDate(group.createdAt)}</span>
+                    <Calendar size={14} className="sm:w-4 sm:h-4" />
+                    <span className="text-xs sm:text-sm">Erstellt am {formatDate(group.createdAt)}</span>
                   </div>
                 </div>
                 
                 <div className="border-t pt-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">Gesamtausgaben:</span>
-                    <span className="font-semibold text-green-600">
+                    <span className="text-xs sm:text-sm text-gray-600">Gesamtausgaben:</span>
+                    <span className="font-semibold text-green-600 text-sm sm:text-base">
                       {getTotalExpenses(group).toFixed(2)}€
                     </span>
                   </div>
                   <div className="flex justify-between items-center mt-1">
-                    <span className="text-sm text-gray-600">Ausgaben:</span>
-                    <span className="text-sm text-gray-500">
+                    <span className="text-xs sm:text-sm text-gray-600">Ausgaben:</span>
+                    <span className="text-xs sm:text-sm text-gray-500">
                       {group.expenses.length} Einträge
                     </span>
                   </div>

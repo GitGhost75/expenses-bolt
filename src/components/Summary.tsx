@@ -29,25 +29,25 @@ export function Summary({ people, expenses }: SummaryProps) {
   const amountPerPerson = totalExpenses / people.length;
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
+    <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+      <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4 sm:mb-6 flex items-center gap-2">
         <Calculator size={24} />
         Zusammenfassung
       </h2>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        <div className="bg-blue-50 p-4 rounded-lg">
-          <h3 className="font-semibold text-blue-800 mb-2">Gesamt</h3>
-          <p className="text-2xl font-bold text-blue-600">{totalExpenses.toFixed(2)}€</p>
+      <p className="text-gray-500 text-center py-6 sm:py-8 text-sm sm:text-base">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
+        <div className="bg-blue-50 p-3 sm:p-4 rounded-lg">
+          <h3 className="font-semibold text-blue-800 mb-2 text-sm sm:text-base">Gesamt</h3>
+          <p className="text-xl sm:text-2xl font-bold text-blue-600">{totalExpenses.toFixed(2)}€</p>
         </div>
-        <div className="bg-green-50 p-4 rounded-lg">
-          <h3 className="font-semibold text-green-800 mb-2">Pro Person</h3>
-          <p className="text-2xl font-bold text-green-600">{amountPerPerson.toFixed(2)}€</p>
+        <div className="bg-green-50 p-3 sm:p-4 rounded-lg">
+          <h3 className="font-semibold text-green-800 mb-2 text-sm sm:text-base">Pro Person</h3>
+          <p className="text-xl sm:text-2xl font-bold text-green-600">{amountPerPerson.toFixed(2)}€</p>
         </div>
       </div>
 
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold text-gray-800 mb-3">Salden</h3>
+      <div className="mb-4 sm:mb-6">
+        <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3">Salden</h3>
         <div className="space-y-2">
           {balances.map((balance) => {
             const person = people.find(p => p.id === balance.personId);
@@ -59,9 +59,9 @@ export function Summary({ people, expenses }: SummaryProps) {
                 key={balance.personId}
                 className="flex justify-between items-center p-3 bg-gray-50 rounded-md"
               >
-                <span className="font-medium text-gray-700">{person?.name}</span>
+                <span className="font-medium text-gray-700 text-sm sm:text-base break-words flex-1 mr-2">{person?.name}</span>
                 <span
-                  className={`font-semibold ${
+                  className={`font-semibold text-sm sm:text-base flex-shrink-0 ${
                     isNeutral
                       ? 'text-gray-600'
                       : isPositive
@@ -84,17 +84,17 @@ export function Summary({ people, expenses }: SummaryProps) {
 
       {settlements.length > 0 && (
         <div>
-          <h3 className="text-lg font-semibold text-gray-800 mb-3">Ausgleichszahlungen</h3>
+          <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3">Ausgleichszahlungen</h3>
           <div className="space-y-3">
             {settlements.map((settlement, index) => (
               <div
                 key={index}
-                className="flex items-center gap-3 p-4 bg-yellow-50 rounded-md border border-yellow-200"
+                className="flex items-center gap-2 sm:gap-3 p-3 sm:p-4 bg-yellow-50 rounded-md border border-yellow-200"
               >
-                <span className="font-medium text-gray-700">{settlement.from}</span>
-                <ArrowRight size={18} className="text-yellow-600" />
-                <span className="font-medium text-gray-700">{settlement.to}</span>
-                <span className="ml-auto font-semibold text-yellow-700">
+                <span className="font-medium text-gray-700 text-sm sm:text-base break-words">{settlement.from}</span>
+                <ArrowRight size={16} className="text-yellow-600 flex-shrink-0 sm:w-4.5 sm:h-4.5" />
+                <span className="font-medium text-gray-700 text-sm sm:text-base break-words">{settlement.to}</span>
+                <span className="ml-auto font-semibold text-yellow-700 text-sm sm:text-base flex-shrink-0">
                   {settlement.amount.toFixed(2)}€
                 </span>
               </div>
@@ -104,8 +104,8 @@ export function Summary({ people, expenses }: SummaryProps) {
       )}
 
       {settlements.length === 0 && expenses.length > 0 && (
-        <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-          <p className="text-green-800 font-medium text-center">
+        <div className="bg-green-50 p-3 sm:p-4 rounded-lg border border-green-200">
+          <p className="text-green-800 font-medium text-center text-sm sm:text-base">
             🎉 Alle Ausgaben sind bereits ausgeglichen!
           </p>
         </div>

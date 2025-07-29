@@ -79,46 +79,46 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
+    <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
       <div 
-        className="flex items-center justify-between cursor-pointer hover:bg-gray-50 -m-6 p-6 rounded-t-lg transition-colors duration-200"
+        className="flex items-center justify-between cursor-pointer hover:bg-gray-50 -m-4 sm:-m-6 p-4 sm:p-6 rounded-t-lg transition-colors duration-200"
         onClick={() => setIsExpenseBlockExpanded(!isExpenseBlockExpanded)}
       >
-        <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-800 flex items-center gap-2 flex-1">
           <Receipt size={24} />
           Ausgaben
           {expenses.length > 0 && (
-            <span className="bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded-full ml-2">
+            <span className="bg-blue-100 text-blue-800 text-xs sm:text-sm font-medium px-2 sm:px-2.5 py-0.5 rounded-full ml-2">
               {expenses.length}
             </span>
           )}
         </h2>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
           {expenses.length > 0 && (
-            <span className="text-sm text-gray-600 font-medium">
+            <span className="text-xs sm:text-sm text-gray-600 font-medium hidden sm:inline">
               Gesamt: {expenses.reduce((sum, expense) => sum + expense.amount, 0).toFixed(2)}€
             </span>
           )}
           <button className="text-gray-400 hover:text-gray-600 transition-colors duration-200">
-            {isExpenseBlockExpanded ? <ChevronDown size={24} /> : <ChevronRight size={24} />}
+            {isExpenseBlockExpanded ? <ChevronDown size={20} className="sm:w-6 sm:h-6" /> : <ChevronRight size={20} className="sm:w-6 sm:h-6" />}
           </button>
         </div>
       </div>
       
       {isExpenseBlockExpanded && (
         <>
-          <form onSubmit={handleSubmit} className="mb-6 space-y-4 mt-4">
+          <form onSubmit={handleSubmit} className="mb-4 sm:mb-6 space-y-3 sm:space-y-4 mt-4">
         <div>
           <input
             type="text"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Beschreibung (z.B. Restaurant, Taxi, etc.)"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2.5 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
         
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
           <div className="flex-1">
             <input
               type="number"
@@ -127,7 +127,7 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
               placeholder="Betrag (€)"
               step="0.01"
               min="0"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2.5 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
           
@@ -135,7 +135,7 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
             <select
               value={paidBy}
               onChange={(e) => setPaidBy(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2.5 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">Bezahlt von...</option>
               {people.map((person) => (
@@ -150,7 +150,7 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
         <button
           type="submit"
           disabled={!description.trim() || !amount || !paidBy || people.length === 0}
-          className="w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center gap-2"
+          className="w-full px-4 py-3 sm:py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center gap-2 text-sm sm:text-base"
         >
           <Plus size={18} />
           Ausgabe hinzufügen
@@ -168,17 +168,17 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
                 key={expense.id}
                 className="bg-blue-50 rounded-lg border border-blue-200 overflow-hidden"
               >
-                <div className="p-4 space-y-3">
+                <div className="p-3 sm:p-4 space-y-3">
                   <input
                     type="text"
                     value={editingDescription}
                     onChange={(e) => setEditingDescription(e.target.value)}
                     onKeyDown={handleEditKeyPress}
                     placeholder="Beschreibung"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2.5 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                   
-                  <div className="flex gap-3">
+                  <div className="flex flex-col sm:flex-row gap-3">
                     <input
                       type="number"
                       value={editingAmount}
@@ -187,13 +187,13 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
                       placeholder="Betrag (€)"
                       step="0.01"
                       min="0"
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="flex-1 px-3 py-2.5 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                     
                     <select
                       value={editingPaidBy}
                       onChange={(e) => setEditingPaidBy(e.target.value)}
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="flex-1 px-3 py-2.5 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
                       <option value="">Bezahlt von...</option>
                       {people.map((person) => (
@@ -208,14 +208,14 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
                     <button
                       onClick={saveEdit}
                       disabled={!editingDescription.trim() || !editingAmount || !editingPaidBy}
-                      className="px-3 py-1 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 flex items-center gap-1"
+                      className="px-3 py-1.5 sm:py-1 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 flex items-center gap-1 text-sm sm:text-base"
                     >
                       <Check size={16} />
                       Speichern
                     </button>
                     <button
                       onClick={cancelEditing}
-                      className="px-3 py-1 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors duration-200 flex items-center gap-1"
+                      className="px-3 py-1.5 sm:py-1 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors duration-200 flex items-center gap-1 text-sm sm:text-base"
                     >
                       <X size={16} />
                       Abbrechen
@@ -233,22 +233,22 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
             >
               {/* Akkordeon Header */}
               <div 
-                className="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 transition-colors duration-200"
+                className="flex items-center justify-between p-3 sm:p-4 cursor-pointer hover:bg-gray-50 transition-colors duration-200"
                 onClick={() => toggleExpense(expense.id)}
               >
                 <div className="flex items-center gap-3 flex-1">
                   <button className="text-gray-400 hover:text-gray-600 transition-colors duration-200">
-                    {isExpanded ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
+                    {isExpanded ? <ChevronDown size={18} className="sm:w-5 sm:h-5" /> : <ChevronRight size={18} className="sm:w-5 sm:h-5" />}
                   </button>
-                  <div className="flex-1">
-                    <div className="font-medium text-gray-800">{expense.description}</div>
-                    <div className="text-sm text-gray-500">
+                  <div className="flex-1 min-w-0">
+                    <div className="font-medium text-gray-800 text-sm sm:text-base break-words">{expense.description}</div>
+                    <div className="text-xs sm:text-sm text-gray-500">
                       {paidByPerson?.name}
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="font-semibold text-lg text-green-600">
+                <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+                  <span className="font-semibold text-base sm:text-lg text-green-600">
                     {expense.amount.toFixed(2)}€
                   </span>
                 </div>
@@ -256,9 +256,9 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
               
               {/* Akkordeon Content */}
               {isExpanded && (
-                <div className="border-t border-gray-200 bg-gray-50 p-4">
+                <div className="border-t border-gray-200 bg-gray-50 p-3 sm:p-4">
                   <div className="space-y-3">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-xs sm:text-sm">
                       <div>
                         <span className="font-medium text-gray-600">Datum:</span>
                         <div className="text-gray-800">{formatDate(expense.date)}</div>
@@ -269,21 +269,21 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
                       </div>
                       <div>
                         <span className="font-medium text-gray-600">Betrag:</span>
-                        <div className="text-gray-800 font-semibold">{expense.amount.toFixed(2)}€</div>
+                        <div className="text-gray-800 font-semibold text-sm sm:text-base">{expense.amount.toFixed(2)}€</div>
                       </div>
                       <div>
                         <span className="font-medium text-gray-600">Anteil pro Person:</span>
-                        <div className="text-gray-800">{(expense.amount / people.length).toFixed(2)}€</div>
+                        <div className="text-gray-800 text-sm sm:text-base">{(expense.amount / people.length).toFixed(2)}€</div>
                       </div>
                     </div>
                     
-                    <div className="flex justify-end gap-2 pt-2 border-t border-gray-200">
+                    <div className="flex flex-col sm:flex-row justify-end gap-2 pt-2 border-t border-gray-200">
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           startEditing(expense);
                         }}
-                        className="px-3 py-1.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 flex items-center gap-1 text-sm"
+                        className="px-3 py-2 sm:py-1.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center gap-1 text-sm"
                         title="Bearbeiten"
                       >
                         <Edit2 size={16} />
@@ -294,7 +294,7 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
                           e.stopPropagation();
                           onRemoveExpense(expense.id);
                         }}
-                        className="px-3 py-1.5 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors duration-200 flex items-center gap-1 text-sm"
+                        className="px-3 py-2 sm:py-1.5 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors duration-200 flex items-center justify-center gap-1 text-sm"
                         title="Löschen"
                       >
                         <Trash2 size={16} />
@@ -308,10 +308,10 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
           );
         })}
         {expenses.length === 0 && (
-          <div className="text-center py-12">
+          <div className="text-center py-8 sm:py-12">
             <div className="text-gray-400 mb-2">💳</div>
-            <p className="text-gray-500 text-lg mb-1">Noch keine Ausgaben erfasst</p>
-            <p className="text-gray-400 text-sm">Fügen Sie Ihre erste Ausgabe hinzu</p>
+            <p className="text-gray-500 text-base sm:text-lg mb-1">Noch keine Ausgaben erfasst</p>
+            <p className="text-gray-400 text-sm sm:text-base">Fügen Sie Ihre erste Ausgabe hinzu</p>
           </div>
         )}
       </div>

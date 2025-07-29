@@ -49,24 +49,24 @@ export function PersonManager({ people, onAddPerson, onRemovePerson, onRenamePer
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-xl font-semibold text-gray-800 mb-4">Gruppenmitglieder</h2>
+    <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+      <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">Gruppenmitglieder</h2>
       
       <form onSubmit={handleSubmit} className="mb-4">
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           <input
             type="text"
             value={newPersonName}
             onChange={(e) => setNewPersonName(e.target.value)}
             placeholder="Name eingeben"
-            className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="flex-1 px-3 py-2.5 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
           <button
             type="submit"
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 flex items-center gap-2"
+            className="px-4 py-2.5 sm:py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center gap-2 text-sm sm:text-base"
           >
             <UserPlus size={18} />
-            <span className="hidden sm:inline">Hinzufügen</span>
+            <span>Hinzufügen</span>
           </button>
         </div>
       </form>
@@ -84,43 +84,43 @@ export function PersonManager({ people, onAddPerson, onRemovePerson, onRenamePer
                   value={editingName}
                   onChange={(e) => setEditingName(e.target.value)}
                   onKeyDown={handleEditKeyPress}
-                  className="flex-1 px-2 py-1 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="flex-1 px-2 py-1.5 sm:py-1 text-sm sm:text-base border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   autoFocus
                 />
-                <div className="flex gap-1 ml-2">
+                <div className="flex gap-1 ml-2 flex-shrink-0">
                   <button
                     onClick={saveEdit}
-                    className="text-green-500 hover:text-green-700 transition-colors duration-200"
+                    className="text-green-500 hover:text-green-700 transition-colors duration-200 p-1"
                     disabled={!editingName.trim()}
                   >
-                    <Check size={18} />
+                    <Check size={16} className="sm:w-4.5 sm:h-4.5" />
                   </button>
                   <button
                     onClick={cancelEditing}
-                    className="text-gray-500 hover:text-gray-700 transition-colors duration-200"
+                    className="text-gray-500 hover:text-gray-700 transition-colors duration-200 p-1"
                   >
-                    <XIcon size={18} />
+                    <XIcon size={16} className="sm:w-4.5 sm:h-4.5" />
                   </button>
                 </div>
               </>
             ) : (
               <>
-                <span className="font-medium text-gray-700 flex-1">{person.name}</span>
-                <div className="flex gap-1">
+                <span className="font-medium text-gray-700 flex-1 text-sm sm:text-base break-words mr-2">{person.name}</span>
+                <div className="flex gap-1 flex-shrink-0">
                   <button
                     onClick={() => startEditing(person)}
-                    className="text-blue-500 hover:text-blue-700 transition-colors duration-200"
+                    className="text-blue-500 hover:text-blue-700 transition-colors duration-200 p-1"
                     title="Umbenennen"
                   >
-                    <Edit2 size={18} />
+                    <Edit2 size={16} className="sm:w-4.5 sm:h-4.5" />
                   </button>
                   <button
                     onClick={() => onRemovePerson(person.id)}
-                    className="text-red-500 hover:text-red-700 transition-colors duration-200"
+                    className="text-red-500 hover:text-red-700 transition-colors duration-200 p-1"
                     disabled={people.length <= 1}
                     title="Entfernen"
                   >
-                    <X size={18} />
+                    <X size={16} className="sm:w-4.5 sm:h-4.5" />
                   </button>
                 </div>
               </>
@@ -128,7 +128,7 @@ export function PersonManager({ people, onAddPerson, onRemovePerson, onRenamePer
           </div>
         ))}
         {people.length === 0 && (
-          <p className="text-gray-500 text-center py-4">Noch keine Personen hinzugefügt</p>
+          <p className="text-gray-500 text-center py-4 text-sm sm:text-base">Noch keine Personen hinzugefügt</p>
         )}
       </div>
     </div>

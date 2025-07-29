@@ -60,7 +60,9 @@ function App() {
     const updatedGroup = {
       ...activeGroup,
       people: activeGroup.people.filter(person => person.id !== id),
-      expenses: activeGroup.expenses.filter(expense => expense.paidBy !== id)
+      expenses: activeGroup.expenses.filter(expense => 
+        !expense.paidBy.includes(id) && !expense.involvedPeople.includes(id)
+      )
     };
     
     updateGroup(updatedGroup);
@@ -79,7 +81,7 @@ function App() {
     updateGroup(updatedGroup);
   };
 
-  const addExpense = (description: string, amount: number, paidBy: string) => {
+  const addExpense = (description: string, amount: number, paidBy: string[], involvedPeople: string[]) => {
     if (!activeGroup) return;
     
     const newExpense: Expense = {
@@ -87,6 +89,7 @@ function App() {
       description,
       amount,
       paidBy,
+      involvedPeople,
       date: new Date()
     };
     
@@ -109,14 +112,14 @@ function App() {
     updateGroup(updatedGroup);
   };
 
-  const editExpense = (id: string, description: string, amount: number, paidBy: string) => {
+  const editExpense = (id: string, description: string, amount: number, paidBy: string[], involvedPeople: string[]) => {
     if (!activeGroup) return;
     
     const updatedGroup = {
       ...activeGroup,
       expenses: activeGroup.expenses.map(expense => 
         expense.id === id 
-          ? { ...expense, description, amount, paidBy }
+          ? { ...expense, description, amount, paidBy, involvedPeople }
           : expense
       )
     };

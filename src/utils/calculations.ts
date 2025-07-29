@@ -1,17 +1,27 @@
 import { Person, Expense, Balance, Settlement } from '../types';
 
 export function calculateBalances(people: Person[], expenses: Expense[]): Balance[] {
-  const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0);
-  const amountPerPerson = totalExpenses / people.length;
-
   const balances: Balance[] = people.map(person => {
-    const paid = expenses
-      .filter(expense => expense.paidBy === person.id)
-      .reduce((sum, expense) => sum + expense.amount, 0);
+    let paid = 0;
+    let owes = 0;
+    
+    expenses.forEach(expense => {
+      // Berechne was die Person bezahlt hat
+      if (expense.paidBy.includes(person.id)) {
+        const payersCount = expense.paidBy.length;
+        paid += expense.amount / payersCount;
+      }
+      
+      // Berechne was die Person schuldet
+      if (expense.involvedPeople.includes(person.id)) {
+        const involvedCount = expense.involvedPeople.length;
+        owes += expense.amount / involvedCount;
+      }
+    });
     
     return {
       personId: person.id,
-      balance: paid - amountPerPerson
+      balance: paid - owes
     };
   });
 

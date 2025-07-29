@@ -26,7 +26,6 @@ export function Summary({ people, expenses }: SummaryProps) {
   const balances = calculateBalances(people, expenses);
   const settlements = calculateSettlements(people, balances);
   const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0);
-  const amountPerPerson = totalExpenses / people.length;
 
   return (
     <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
@@ -39,10 +38,6 @@ export function Summary({ people, expenses }: SummaryProps) {
         <div className="bg-blue-50 p-3 sm:p-4 rounded-lg">
           <h3 className="font-semibold text-blue-800 mb-2 text-sm sm:text-base">Gesamt</h3>
           <p className="text-xl sm:text-2xl font-bold text-blue-600">{totalExpenses.toFixed(2)}€</p>
-        </div>
-        <div className="bg-green-50 p-3 sm:p-4 rounded-lg">
-          <h3 className="font-semibold text-green-800 mb-2 text-sm sm:text-base">Pro Person</h3>
-          <p className="text-xl sm:text-2xl font-bold text-green-600">{amountPerPerson.toFixed(2)}€</p>
         </div>
       </div>
 

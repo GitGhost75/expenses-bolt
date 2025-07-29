@@ -5,29 +5,32 @@ import { Person, Expense } from '../types';
 interface ExpenseManagerProps {
   people: Person[];
   expenses: Expense[];
-  onAddExpense: (description: string, amount: number, paidBy: string) => void;
+  onAddExpense: (description: string, amount: number, paidBy: string[], involvedPeople: string[]) => void;
   onRemoveExpense: (id: string) => void;
-  onEditExpense: (id: string, description: string, amount: number, paidBy: string) => void;
+  onEditExpense: (id: string, description: string, amount: number, paidBy: string[], involvedPeople: string[]) => void;
 }
 
 export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense, onEditExpense }: ExpenseManagerProps) {
   const [description, setDescription] = useState('');
   const [amount, setAmount] = useState('');
-  const [paidBy, setPaidBy] = useState('');
+  const [paidBy, setPaidBy] = useState<string[]>([]);
+  const [involvedPeople, setInvolvedPeople] = useState<string[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingDescription, setEditingDescription] = useState('');
   const [editingAmount, setEditingAmount] = useState('');
-  const [editingPaidBy, setEditingPaidBy] = useState('');
+  const [editingPaidBy, setEditingPaidBy] = useState<string[]>([]);
+  const [editingInvolvedPeople, setEditingInvolvedPeople] = useState<string[]>([]);
   const [expandedExpenses, setExpandedExpenses] = useState<Set<string>>(new Set());
   const [isExpenseBlockExpanded, setIsExpenseBlockExpanded] = useState(true);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (description.trim() && amount && paidBy) {
-      onAddExpense(description.trim(), parseFloat(amount), paidBy);
+    if (description.trim() && amount && paidBy.length > 0 && involvedPeople.length > 0) {
+      onAddExpense(description.trim(), parseFloat(amount), paidBy, involvedPeople);
       setDescription('');
       setAmount('');
-      setPaidBy('');
+      setPaidBy([]);
+      setInvolvedPeople([]);
     }
   };
 
@@ -36,18 +39,20 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
     setEditingDescription(expense.description);
     setEditingAmount(expense.amount.toString());
     setEditingPaidBy(expense.paidBy);
+    setEditingInvolvedPeople(expense.involvedPeople);
   };
 
   const cancelEditing = () => {
     setEditingId(null);
     setEditingDescription('');
     setEditingAmount('');
-    setEditingPaidBy('');
+    setEditingPaidBy([]);
+    setEditingInvolvedPeople([]);
   };
 
   const saveEdit = () => {
-    if (editingDescription.trim() && editingAmount && editingPaidBy && editingId) {
-      onEditExpense(editingId, editingDescription.trim(), parseFloat(editingAmount), editingPaidBy);
+    if (editingDescription.trim() && editingAmount && editingPaidBy.length > 0 && editingInvolvedPeople.length > 0 && editingId) {
+      onEditExpense(editingId, editingDescription.trim(), parseFloat(editingAmount), editingPaidBy, editingInvolvedPeople);
       cancelEditing();
     }
   };
@@ -69,6 +74,63 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
     }
     setExpandedExpenses(newExpanded);
   };
+
+  const togglePersonInList = (personId: string, currentList: string[], setList: (list: string[]) => void) => {
+    if (currentList.includes(personId)) {
+      setList(currentList.filter(id => id !== personId));
+    } else {
+      setList([...currentList, personId]);
+    }
+  };
+
+  const PersonSelector = ({ 
+    title, 
+    selectedPeople, 
+    onToggle, 
+    allSelected = false,
+    onSelectAll 
+  }: { 
+    title: string; 
+    selectedPeople: string[]; 
+    onToggle: (personId: string) => void;
+    allSelected?: boolean;
+    onSelectAll?: () => void;
+  }) => (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <label className="text-sm font-medium text-gray-700">{title}</label>
+        {onSelectAll && (
+          <button
+            type="button"
+            onClick={onSelectAll}
+            className="text-xs text-blue-600 hover:text-blue-800"
+          >
+            {allSelected ? 'Alle abwählen' : 'Alle auswählen'}
+          </button>
+        )}
+      </div>
+      <div className="grid grid-cols-2 gap-2">
+        {people.map((person) => (
+          <label
+            key={person.id}
+            className={`flex items-center p-2 rounded-md border cursor-pointer transition-colors duration-200 ${
+              selectedPeople.includes(person.id)
+                ? 'bg-blue-50 border-blue-300 text-blue-800'
+                : 'bg-gray-50 border-gray-300 hover:bg-gray-100'
+            }`}
+          >
+            <input
+              type="checkbox"
+              checked={selectedPeople.includes(person.id)}
+              onChange={() => onToggle(person.id)}
+              className="mr-2 text-blue-600 focus:ring-blue-500"
+            />
+            <span className="text-sm break-words">{person.name}</span>
+          </label>
+        ))}
+      </div>
+    </div>
+  );
 
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('de-DE', {
@@ -132,24 +194,42 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
           </div>
           
           <div className="flex-1">
-            <select
-              value={paidBy}
-              onChange={(e) => setPaidBy(e.target.value)}
-              className="w-full px-3 py-2.5 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-              <option value="">Bezahlt von...</option>
-              {people.map((person) => (
-                <option key={person.id} value={person.id}>
-                  {person.name}
-                </option>
-              ))}
-            </select>
+            <PersonSelector
+              title="Bezahlt von"
+              selectedPeople={paidBy}
+              onToggle={(personId) => togglePersonInList(personId, paidBy, setPaidBy)}
+              allSelected={paidBy.length === people.length}
+              onSelectAll={() => {
+                if (paidBy.length === people.length) {
+                  setPaidBy([]);
+                } else {
+                  setPaidBy(people.map(p => p.id));
+                }
+              }}
+            />
+          </div>
+        </div>
+        
+        <div>
+          <PersonSelector
+            title="Betrifft Personen"
+            selectedPeople={involvedPeople}
+            onToggle={(personId) => togglePersonInList(personId, involvedPeople, setInvolvedPeople)}
+            allSelected={involvedPeople.length === people.length}
+            onSelectAll={() => {
+              if (involvedPeople.length === people.length) {
+                setInvolvedPeople([]);
+              } else {
+                setInvolvedPeople(people.map(p => p.id));
+              }
+            }}
+          />
           </div>
         </div>
         
         <button
           type="submit"
-          disabled={!description.trim() || !amount || !paidBy || people.length === 0}
+          disabled={!description.trim() || !amount || paidBy.length === 0 || involvedPeople.length === 0 || people.length === 0}
           className="w-full px-4 py-3 sm:py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center gap-2 text-sm sm:text-base"
         >
           <Plus size={18} />
@@ -159,7 +239,8 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
 
           <div className="space-y-3">
         {expenses.map((expense) => {
-          const paidByPerson = people.find(p => p.id === expense.paidBy);
+          const paidByPeople = people.filter(p => expense.paidBy.includes(p.id));
+          const involvedPeopleNames = people.filter(p => expense.involvedPeople.includes(p.id));
           const isExpanded = expandedExpenses.has(expense.id);
           
           if (editingId === expense.id) {
@@ -190,24 +271,41 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
                       className="flex-1 px-3 py-2.5 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                     
-                    <select
-                      value={editingPaidBy}
-                      onChange={(e) => setEditingPaidBy(e.target.value)}
-                      className="flex-1 px-3 py-2.5 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    >
-                      <option value="">Bezahlt von...</option>
-                      {people.map((person) => (
-                        <option key={person.id} value={person.id}>
-                          {person.name}
-                        </option>
-                      ))}
-                    </select>
+                    <div className="flex-1 space-y-3">
+                      <PersonSelector
+                        title="Bezahlt von"
+                        selectedPeople={editingPaidBy}
+                        onToggle={(personId) => togglePersonInList(personId, editingPaidBy, setEditingPaidBy)}
+                        allSelected={editingPaidBy.length === people.length}
+                        onSelectAll={() => {
+                          if (editingPaidBy.length === people.length) {
+                            setEditingPaidBy([]);
+                          } else {
+                            setEditingPaidBy(people.map(p => p.id));
+                          }
+                        }}
+                      />
+                      
+                      <PersonSelector
+                        title="Betrifft Personen"
+                        selectedPeople={editingInvolvedPeople}
+                        onToggle={(personId) => togglePersonInList(personId, editingInvolvedPeople, setEditingInvolvedPeople)}
+                        allSelected={editingInvolvedPeople.length === people.length}
+                        onSelectAll={() => {
+                          if (editingInvolvedPeople.length === people.length) {
+                            setEditingInvolvedPeople([]);
+                          } else {
+                            setEditingInvolvedPeople(people.map(p => p.id));
+                          }
+                        }}
+                      />
+                    </div>
                   </div>
                   
                   <div className="flex justify-end gap-2">
                     <button
                       onClick={saveEdit}
-                      disabled={!editingDescription.trim() || !editingAmount || !editingPaidBy}
+                      disabled={!editingDescription.trim() || !editingAmount || editingPaidBy.length === 0 || editingInvolvedPeople.length === 0}
                       className="px-3 py-1.5 sm:py-1 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 flex items-center gap-1 text-sm sm:text-base"
                     >
                       <Check size={16} />
@@ -243,7 +341,7 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
                   <div className="flex-1 min-w-0">
                     <div className="font-medium text-gray-800 text-sm sm:text-base break-words">{expense.description}</div>
                     <div className="text-xs sm:text-sm text-gray-500">
-                      {paidByPerson?.name}
+                      Bezahlt von: {paidByPeople.map(p => p.name).join(', ')}
                     </div>
                   </div>
                 </div>
@@ -265,7 +363,11 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
                       </div>
                       <div>
                         <span className="font-medium text-gray-600">Bezahlt von:</span>
-                        <div className="text-gray-800">{paidByPerson?.name}</div>
+                        <div className="text-gray-800">{paidByPeople.map(p => p.name).join(', ')}</div>
+                      </div>
+                      <div>
+                        <span className="font-medium text-gray-600">Betrifft:</span>
+                        <div className="text-gray-800">{involvedPeopleNames.map(p => p.name).join(', ')}</div>
                       </div>
                       <div>
                         <span className="font-medium text-gray-600">Betrag:</span>
@@ -273,7 +375,7 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
                       </div>
                       <div>
                         <span className="font-medium text-gray-600">Anteil pro Person:</span>
-                        <div className="text-gray-800 text-sm sm:text-base">{(expense.amount / people.length).toFixed(2)}€</div>
+                        <div className="text-gray-800 text-sm sm:text-base">{(expense.amount / expense.involvedPeople.length).toFixed(2)}€</div>
                       </div>
                     </div>
                     

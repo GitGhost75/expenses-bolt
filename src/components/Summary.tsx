@@ -34,7 +34,7 @@ export function Summary({ people, expenses }: SummaryProps) {
         <Calculator size={24} />
         Zusammenfassung
       </h2>
-      <p className="text-gray-500 text-center py-6 sm:py-8 text-sm sm:text-base">
+      
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
         <div className="bg-blue-50 p-3 sm:p-4 rounded-lg">
           <h3 className="font-semibold text-blue-800 mb-2 text-sm sm:text-base">Gesamt</h3>

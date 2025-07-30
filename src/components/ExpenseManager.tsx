@@ -225,7 +225,6 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
             }}
           />
           </div>
-        </div>
         
         <button
           type="submit"
